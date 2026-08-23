@@ -1,0 +1,142 @@
+[
+  {
+    "code": "BLEEDING",
+    "urdu_text": "مجھے خون آ رہا ہے۔",
+    "english_text": "I am bleeding.",
+    "priority": "p0",
+    "is_demo_critical": false,
+    "audio_path": "assets/audio/bleeding.wav",
+    "audio_ok": true,
+    "concept_sequence": "BLEEDING"
+  },
+  {
+    "code": "BREATHING_PROBLEM",
+    "urdu_text": "مجھے سانس لینے میں مشکل ہو رہی ہے۔",
+    "english_text": "I am having difficulty breathing.",
+    "priority": "p0",
+    "is_demo_critical": true,
+    "audio_path": "assets/audio/breathing_problem.wav",
+    "audio_ok": true,
+    "concept_sequence": "BREATHING_PROBLEM"
+  },
+  {
+    "code": "CHEST_PAIN",
+    "urdu_text": "مجھے سینے میں درد ہے۔",
+    "english_text": "I have chest pain.",
+    "priority": "p0",
+    "is_demo_critical": true,
+    "audio_path": "assets/audio/chest_pain.wav",
+    "audio_ok": true,
+    "concept_sequence": "CHEST_PAIN"
+  },
+  {
+    "code": "CHEST_PAIN_TWO_DAYS",
+    "urdu_text": "مجھے دو دن سے سینے میں درد ہے۔",
+    "english_text": "I have had chest pain for two days.",
+    "priority": "p0",
+    "is_demo_critical": true,
+    "audio_path": "assets/audio/chest_pain_two_days.wav",
+    "audio_ok": true,
+    "concept_sequence": "CHEST_PAIN + TWO + DAY"
+  },
+  {
+    "code": "COUGH",
+    "urdu_text": "مجھے کھانسی ہے۔",
+    "english_text": "I have a cough.",
+    "priority": "p0",
+    "is_demo_critical": false,
+    "audio_path": "assets/audio/cough.wav",
+    "audio_ok": true,
+    "concept_sequence": "COUGH"
+  },
+  {
+    "code": "DIZZINESS",
+    "urdu_text": "مجھے چکر آ رہے ہیں۔",
+    "english_text": "I feel dizzy.",
+    "priority": "p0",
+    "is_demo_critical": false,
+    "audio_path": "assets/audio/dizziness.wav",
+    "audio_ok": true,
+    "concept_sequence": "DIZZINESS"
+  },
+  {
+    "code": "FEVER",
+    "urdu_text": "???? ???? ???",
+    "english_text": "I have fever.",
+    "priority": "p0",
+    "is_demo_critical": true,
+    "audio_path": "assets/audio/fever.wav",
+    "audio_ok": false,
+    "concept_sequence": "FEVER"
+  },
+  {
+    "code": "FEVER_TWO_DAYS",
+    "urdu_text": "مجھے دو دن سے بخار ہے۔",
+    "english_text": "I have had fever for two days.",
+    "priority": "p0",
+    "is_demo_critical": true,
+    "audio_path": "assets/audio/fever_two_days.wav",
+    "audio_ok": true,
+    "concept_sequence": "FEVER + TWO + DAY"
+  },
+  {
+    "code": "HEADACHE",
+    "urdu_text": "مجھے سر میں درد ہے۔",
+    "english_text": "I have a headache.",
+    "priority": "p0",
+    "is_demo_critical": false,
+    "audio_path": "assets/audio/headache.wav",
+    "audio_ok": true,
+    "concept_sequence": "HEADACHE"
+  },
+  {
+    "code": "NEED_HELP",
+    "urdu_text": "مجھے مدد چاہیے۔",
+    "english_text": "I need help.",
+    "priority": "p0",
+    "is_demo_critical": false,
+    "audio_path": "assets/audio/need_help.wav",
+    "audio_ok": true,
+    "concept_sequence": "HELP"
+  },
+  {
+    "code": "NO",
+    "urdu_text": "جی نہیں۔",
+    "english_text": "No.",
+    "priority": "p0",
+    "is_demo_critical": true,
+    "audio_path": "assets/audio/no.wav",
+    "audio_ok": true,
+    "concept_sequence": "NO"
+  },
+  {
+    "code": "STOMACH_PAIN",
+    "urdu_text": "میرے پیٹ میں درد ہے۔",
+    "english_text": "My stomach hurts.",
+    "priority": "p0",
+    "is_demo_critical": false,
+    "audio_path": "assets/audio/stomach_pain.wav",
+    "audio_ok": true,
+    "concept_sequence": "STOMACH_PAIN"
+  },
+  {
+    "code": "VOMITING",
+    "urdu_text": "مجھے قے آ رہی ہے۔",
+    "english_text": "I am vomiting.",
+    "priority": "p0",
+    "is_demo_critical": false,
+    "audio_path": "assets/audio/vomiting.wav",
+    "audio_ok": true,
+    "concept_sequence": "VOMITING"
+  },
+  {
+    "code": "YES",
+    "urdu_text": "جی ہاں۔",
+    "english_text": "Yes.",
+    "priority": "p0",
+    "is_demo_critical": true,
+    "audio_path": "assets/audio/yes.wav",
+    "audio_ok": true,
+    "concept_sequence": "YES"
+  }
+]

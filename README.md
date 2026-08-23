@@ -53,14 +53,65 @@ Frozen on 2026-08-23 — see [Technology Stack](docs/TECH_STACK.md).
 
 Start with [`docs/INDEX.md`](docs/INDEX.md).
 
-## Local setup
+## Running it
+
+Windows, from the project folder:
+
+| Script | What it does |
+|---|---|
+| `setup.bat` | One-time: installs dependencies, creates the database, applies migrations, seeds content, builds the frontend |
+| `run.bat` | Checks everything is ready, starts the app, opens the browser |
+| `dev.bat` | Same, with hot reload and visible logs |
+| `stop.bat` | Stops both servers |
+| `snapshot.bat` | Exports the offline demo snapshot to `data/*.json` |
+
+`run.bat` will not start a half-working app. It verifies Python and Node are on
+PATH, `.env` exists, `node_modules` and the production build are present
+(offering to install or build if not), then runs `backend/scripts/preflight.py`
+to check Python packages, database reachability, pending migrations, seeded
+content, and stale or missing audio. Each failure names the exact command that
+fixes it. It then waits for **both** the API and the web server to answer before
+reporting ready, and prints any degraded modes it detects.
+
+Then:
+
+| | |
+|---|---|
+| Communication screen | http://localhost:3000 |
+| Staff sign in | http://localhost:3000/login |
+| Admin console | http://localhost:3000/admin |
+| API docs | http://localhost:8000/docs |
+
+Sign in with the `SEED_ADMIN_EMAIL` / `SEED_ADMIN_PASSWORD` from your `.env`.
+**The patient never signs in** — the communication screen is open to everyone.
+
+Manual equivalent:
 
 ```bash
-cp .env.example .env      # fill in local values; .env is gitignored
-createdb psl_bridge       # then apply db/migrations and seed
+cp .env.example .env                          # .env is gitignored
+createdb psl_bridge
+cd backend && python -m app.migrate && python -m app.seed --dev-content
+cd ../frontend && npm install && npm run build && npm run start
 ```
 
 Never commit `.env`. See [Technology Stack](docs/TECH_STACK.md) for the full setup and credential rules.
+
+## What is real and what is stubbed
+
+The application, database and safety architecture are built and working. The
+three model-backed pieces are **stubs behind adapter interfaces**, clearly
+labelled everywhere they appear:
+
+- **Recognition** — the segmentation state machine and the unknown gate are
+  real; the DTW scoring is simulated. Every event carries `engine: "stub"` and
+  the UI shows a *Simulated engine* badge.
+- **Urdu speech** — the pipeline, the staleness guard and playback are real;
+  the audio files are placeholder tones until Kokoro is installed.
+- **Doctor voice input** — phrase matching is real; transcription is not wired
+  up. The phrase buttons are fully functional.
+
+Nothing simulated can be mistaken for recognition. See
+[Technology Stack](docs/TECH_STACK.md) for what landing the real models requires.
 
 ## Non-goals
 

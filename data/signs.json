@@ -1,0 +1,92 @@
+[
+  {
+    "code": "BLEEDING",
+    "urdu_meaning": "خون بہنا",
+    "english_meaning": "bleeding",
+    "is_demo_critical": false
+  },
+  {
+    "code": "BREATHING_PROBLEM",
+    "urdu_meaning": "سانس کی تکلیف",
+    "english_meaning": "breathing problem",
+    "is_demo_critical": true
+  },
+  {
+    "code": "CHEST_PAIN",
+    "urdu_meaning": "سینے میں درد",
+    "english_meaning": "chest pain",
+    "is_demo_critical": true
+  },
+  {
+    "code": "COUGH",
+    "urdu_meaning": "کھانسی",
+    "english_meaning": "cough",
+    "is_demo_critical": false
+  },
+  {
+    "code": "DAY",
+    "urdu_meaning": "دن",
+    "english_meaning": "day",
+    "is_demo_critical": true
+  },
+  {
+    "code": "DIZZINESS",
+    "urdu_meaning": "چکر",
+    "english_meaning": "dizziness",
+    "is_demo_critical": false
+  },
+  {
+    "code": "FEVER",
+    "urdu_meaning": "بخار",
+    "english_meaning": "fever",
+    "is_demo_critical": true
+  },
+  {
+    "code": "HEADACHE",
+    "urdu_meaning": "سر درد",
+    "english_meaning": "headache",
+    "is_demo_critical": false
+  },
+  {
+    "code": "HELP",
+    "urdu_meaning": "مدد",
+    "english_meaning": "help",
+    "is_demo_critical": false
+  },
+  {
+    "code": "INJURY",
+    "urdu_meaning": "چوٹ",
+    "english_meaning": "injury",
+    "is_demo_critical": false
+  },
+  {
+    "code": "NO",
+    "urdu_meaning": "نہیں",
+    "english_meaning": "no",
+    "is_demo_critical": true
+  },
+  {
+    "code": "STOMACH_PAIN",
+    "urdu_meaning": "پیٹ میں درد",
+    "english_meaning": "stomach pain",
+    "is_demo_critical": false
+  },
+  {
+    "code": "TWO",
+    "urdu_meaning": "دو",
+    "english_meaning": "two",
+    "is_demo_critical": true
+  },
+  {
+    "code": "VOMITING",
+    "urdu_meaning": "قے",
+    "english_meaning": "vomiting",
+    "is_demo_critical": false
+  },
+  {
+    "code": "YES",
+    "urdu_meaning": "ہاں",
+    "english_meaning": "yes",
+    "is_demo_critical": true
+  }
+]

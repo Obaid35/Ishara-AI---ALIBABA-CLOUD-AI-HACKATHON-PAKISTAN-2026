@@ -68,6 +68,40 @@ Navigation lives in [`docs/INDEX.md`](docs/INDEX.md). This file is a flat invent
 
 ## Non-Markdown project files
 
+### Configuration
 - `.env.example` — configuration template (committed)
 - `.env` — local values (**gitignored**, never committed)
 - `.gitignore`
+
+### Scripts
+- `setup.bat` — one-time setup
+- `run.bat` — start the app
+- `dev.bat` — start with hot reload
+- `stop.bat` — stop both servers
+- `snapshot.bat` — export the offline demo snapshot
+
+### Database
+- `db/migrations/001_init.sql` — schema
+- `db/migrations/002_invariants_and_views.sql` — content-safety invariants and views
+
+### Backend (`backend/`)
+- `requirements.txt`
+- `app/` — `main.py`, `config.py`, `db.py`, `models.py`, `schemas.py`,
+  `security.py`, `deps.py`, `audit.py`, `content_data.py`, `seed.py`, `migrate.py`
+- `app/routers/` — `auth.py`, `content.py`, `speech.py`, `stt_router.py`,
+  `recognize.py`, `admin.py`, `health.py`
+- `app/services/` — `recognition.py`, `tts.py`, `stt.py`, `snapshot.py`
+- `scripts/generate_audio.py`
+- `scripts/preflight.py` — startup readiness checks
+
+### Frontend (`frontend/`)
+- `package.json`, `tsconfig.json`, `next.config.mjs`, `tailwind.config.ts`, `postcss.config.mjs`
+- `app/` — `layout.tsx`, `globals.css`, `page.tsx`, `login/`, `settings/`, `admin/*`
+- `components/` — `Header`, `CameraPanel`, `StatusBar`, `MessageCard`,
+  `SessionHistory`, `DoctorMode`, `admin/ui`
+- `lib/` — `api.ts`, `auth.tsx`, `types.ts`, `useRecognition.ts`
+
+### Generated / local (gitignored)
+- `data/*.json` — exported offline snapshot
+- `assets/audio/*.wav` — pre-generated Urdu audio
+- `assets/psl-videos/*` — verified PSL videos

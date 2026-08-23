@@ -1,5 +1,51 @@
 # Changelog
 
+## 2026-08-23 — Application built
+
+Frontend, backend and database implemented against the frozen stack. Model-backed
+pieces (MediaPipe, Kokoro, Whisper) deliberately left as labelled stubs.
+
+### Added
+- **PostgreSQL schema** — 20 tables, 8 enums, migrations in `db/migrations`, with
+  a minimal runner (`python -m app.migrate`).
+- **Content-safety invariants enforced in the database** — I1 (message needs
+  reliable signs), I1 cascade (demoting a sign auto-disables dependent messages),
+  I2 (phrase needs verification + demo permission), I4 (stricter overrides only),
+  I5 (correct + wrong + unknown = attempts), I6 (reference needs dev permission),
+  I7 (one active config). All verified by live test.
+- **Reporting views** — `v_production_vocabulary`, `v_demoable_messages`,
+  `v_demoable_doctor_phrases`, `v_permission_gaps`, `v_demo_readiness`.
+- **FastAPI backend** — auth with revocable sessions, unauthenticated content
+  endpoints, speech resolution, STT phrase matching, recognition WebSocket, and
+  the full admin API.
+- **Next.js frontend** — one-screen communication interface, doctor mode with
+  categories and search, staff login, settings, and a seven-page admin console.
+- **Recognition socket** — segmentation state machine and the two-condition
+  unknown gate, both real and verified against all three outcomes.
+- **Audio staleness guard** — editing a message's text blocks playback until the
+  audio is regenerated; verified end to end.
+- **Snapshot fallback** — the backend boots read-only from `data/*.json` when
+  PostgreSQL is unavailable.
+- **Launcher scripts** — `setup.bat`, `run.bat`, `dev.bat`, `stop.bat`, `snapshot.bat`.
+- `backend/scripts/generate_audio.py` with a `--placeholder` mode so the speech
+  pipeline is exercisable before Kokoro is installed.
+
+### Deliberately stubbed
+- MediaPipe landmark extraction, DTW scoring, Kokoro generation, Whisper
+  transcription. Each sits behind an adapter interface and labels itself: the
+  socket sends `engine: "stub"`, the UI shows a *Simulated engine* badge, and
+  `/api/health` lists every degradation.
+
+### Fixed during the build
+- Migration runner now uses a raw DBAPI cursor — SQLAlchemy passed psycopg2 an
+  empty parameter set, which made it treat the `%` format specifiers in the
+  PL/pgSQL `RAISE` statements as placeholders.
+- Account email validation relaxed from strict RFC checking; hospital staff
+  accounts legitimately use internal domains such as `admin@pslbridge.local`,
+  which `email-validator` rejects as special-use names.
+- Next pinned to 15.5.23 with `postcss` and `sharp` forced to patched builds via
+  npm `overrides`, clearing all advisories without a major upgrade.
+
 ## 2026-08-23 — Stack freeze and application scope
 
 ### Added

@@ -258,35 +258,112 @@ All three on the demo laptop. The P0 demo must work with the network adapter dis
 
 ## Version pinning
 
-Fill in on Day 1 and do not change afterwards without a decision entry.
+Installed and pinned. Do not change without a decision entry.
 
 | Component | Version | Recorded on |
 |---|---|---|
-| Python | | |
-| mediapipe | | |
-| MediaPipe API used (`solutions` / `tasks`) | | |
-| kokoro | | |
-| G2P dependency (for example espeak-ng) | | |
-| faster-whisper | | |
-| fastapi / uvicorn | | |
-| Node | | |
-| next / react | | |
-| PostgreSQL | | |
+| Python | 3.12.10 | 2026-08-23 |
+| PostgreSQL | 18.4 | 2026-08-23 |
+| fastapi | 0.115.6 | 2026-08-23 |
+| uvicorn | 0.34.0 | 2026-08-23 |
+| sqlalchemy | 2.0.36 | 2026-08-23 |
+| psycopg2-binary | 2.9.10 | 2026-08-23 |
+| pydantic | 2.10.4 | 2026-08-23 |
+| PyJWT | 2.10.1 | 2026-08-23 |
+| bcrypt | 4.2.1 | 2026-08-23 |
+| Node | 24.18.0 | 2026-08-23 |
+| next | 15.5.23 | 2026-08-23 |
+| react / react-dom | 19.0.0 | 2026-08-23 |
+| typescript | 5.7.3 | 2026-08-23 |
+| tailwindcss | 3.4.17 | 2026-08-23 |
+| postcss | 8.5.26 (override) | 2026-08-23 |
+| sharp | 0.35.3 (override) | 2026-08-23 |
+| **mediapipe** | **not installed yet** | |
+| **MediaPipe API used** (`solutions` / `tasks`) | **to be decided on Day 1** | |
+| **kokoro** | **not installed yet** | |
+| **G2P dependency** (for example espeak-ng) | **not installed yet** | |
+| **faster-whisper** | **not installed yet** | |
+
+### Note on the frontend pins
+
+Next is held at **15.5.23**, not 16. The npm advisory that flags the whole
+Next 15 line comes entirely from its bundled `postcss` and `sharp` — Next
+15.5.23 itself carries no direct advisory. Both are forced to patched builds
+through npm `overrides`, which clears the audit without a major upgrade:
+
+```json
+"overrides": { "postcss": "8.5.26", "sharp": "0.35.3" }
+```
+
+`npm audit --omit=dev` reports **0 vulnerabilities**. Neither package is
+reachable from user input in any case — `postcss` only ever processes our own
+authored CSS at build time, and `sharp` is never invoked because the app uses
+no `next/image` (every icon is inline SVG).
+
+### Model dependencies are deliberately absent
+
+`mediapipe`, `kokoro` and `faster-whisper` are **not installed**. Recognition,
+speech generation and transcription run as stubs behind adapter interfaces so
+that the application, the database and the whole safety architecture can be
+built and tested first. See "Current implementation status" below.
+
+## Current implementation status
+
+| Layer | Status |
+|---|---|
+| PostgreSQL schema, invariants, views | **built and verified** |
+| FastAPI backend, auth, admin API | **built and verified** |
+| Next.js frontend, communication screen, admin console | **built and verified** |
+| Segmentation state machine | **built** — real, unchanged when the model lands |
+| Unknown gate (both conditions) | **built and verified** — real |
+| Message templates and resolution | **built and verified** — real |
+| Audio staleness guard | **built and verified** — real |
+| Doctor phrase matching for STT | **built** — real |
+| MediaPipe landmark extraction | **stub** |
+| DTW scoring | **stub** — returns plausible distances so the gate can be exercised |
+| Kokoro speech generation | **stub** — pre-generated placeholder tones stand in for audio |
+| Whisper transcription | **stub** — phrase buttons are fully functional |
+
+Every stub labels itself. The recognition socket sends `engine: "stub"` on
+every event, the UI shows a **Simulated engine** badge over the camera, and
+`/api/health` lists each degradation. Nothing simulated can be mistaken for
+recognition.
+
+The stubs sit behind adapter interfaces. Landing the real models means
+implementing `score()` in `backend/app/services/recognition.py`, `synthesize()`
+in `backend/scripts/generate_audio.py`, and `transcribe()` in
+`backend/app/services/stt.py`. No other code changes.
 
 ## Repository structure
 
 ```text
 PSL-BRIDGE/
+├── setup.bat          one-time setup: deps, database, migrations, seed
+├── run.bat            start the app (production build)
+├── dev.bat            start with hot reload
+├── stop.bat           stop both servers
+├── snapshot.bat       export the offline demo snapshot
+├── .env               local config (gitignored)
+├── .env.example       config template
 ├── frontend/          Next.js + React + TypeScript
-├── backend/           FastAPI, MediaPipe, DTW, Kokoro, faster-whisper
-├── models/            Kokoro + whisper model files (not committed)
+│   ├── app/           routes: /, /login, /settings, /admin/*
+│   ├── components/    camera, status, message card, doctor mode, admin UI
+│   └── lib/           api client, auth context, recognition hook
+├── backend/
+│   ├── app/
+│   │   ├── routers/   auth, content, speech, stt, recognize (ws), admin
+│   │   ├── services/  recognition, tts, stt, snapshot
+│   │   ├── models.py  SQLAlchemy models
+│   │   ├── migrate.py migration runner
+│   │   └── seed.py    content seeding
+│   └── scripts/       generate_audio.py, preflight.py
+├── db/migrations/     001_init.sql, 002_invariants_and_views.sql
 ├── data/              exported JSON snapshot (demo fallback)
 ├── assets/
 │   ├── audio/         pre-generated Urdu WAV files
 │   └── psl-videos/    verified doctor PSL videos
-├── db/                migrations + seed
+├── models/            Kokoro + whisper model files (not committed)
 ├── experiments/day1/  reference extraction, DTW trials, results
-├── tests/
 └── docs/
 ```
 
