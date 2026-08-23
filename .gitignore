@@ -1,0 +1,21 @@
+.env
+.env.local
+*.env
+!.env.example
+
+node_modules/
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# Large / generated artefacts
+models/
+assets/audio/*.wav
+assets/psl-videos/*
+experiments/**/landmarks/
+
+.next/
+dist/
+build/
+.DS_Store
