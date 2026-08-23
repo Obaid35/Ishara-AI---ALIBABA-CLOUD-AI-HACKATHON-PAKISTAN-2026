@@ -1,4 +1,4 @@
--- PSL Bridge — initial schema
+-- Ishara AI — initial schema
 -- Implements docs/DATA_MODEL.md
 -- Rules: no patient identity, no stored consultations, no blobs in the database.
 

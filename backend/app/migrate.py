@@ -88,7 +88,7 @@ def reset() -> None:
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description="PSL Bridge migrations")
+    parser = argparse.ArgumentParser(description="Ishara AI migrations")
     parser.add_argument("--status", action="store_true")
     parser.add_argument("--reset", action="store_true", help="DESTRUCTIVE: drops all data")
     args = parser.parse_args()

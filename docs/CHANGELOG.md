@@ -41,7 +41,7 @@ pieces (MediaPipe, Kokoro, Whisper) deliberately left as labelled stubs.
   empty parameter set, which made it treat the `%` format specifiers in the
   PL/pgSQL `RAISE` statements as placeholders.
 - Account email validation relaxed from strict RFC checking; hospital staff
-  accounts legitimately use internal domains such as `admin@pslbridge.local`,
+  accounts legitimately use internal domains such as `admin@isharaai.local`,
   which `email-validator` rejects as special-use names.
 - Next pinned to 15.5.23 with `postcss` and `sharp` forced to patched builds via
   npm `overrides`, clearing all advisories without a major upgrade.

@@ -2,13 +2,13 @@
 
 ## Name
 
-**PSL Bridge**
+**Ishara AI**
 
 ## Problem
 
 A Deaf PSL user may reach a clinic or hospital where the doctor, nurse, or receptionist does not understand Pakistan Sign Language. Basic communication can then depend on a family member, interpreter, writing, or improvised gestures.
 
-PSL Bridge targets a **small, defined set of healthcare interactions**.
+Ishara AI targets a **small, defined set of healthcare interactions**.
 
 ## Vision
 
@@ -33,7 +33,7 @@ A Deaf patient signs in front of a normal camera and the system communicates the
 
 ## Product boundary
 
-PSL Bridge is a **communication assistant**, not a diagnosis tool, treatment system, hospital-management system, or complete PSL translator. Complex or high-risk conversations may still require a qualified interpreter.
+Ishara AI is a **communication assistant**, not a diagnosis tool, treatment system, hospital-management system, or complete PSL translator. Complex or high-risk conversations may still require a qualified interpreter.
 
 There are no patient records, no appointments, and no stored consultation transcripts.
 

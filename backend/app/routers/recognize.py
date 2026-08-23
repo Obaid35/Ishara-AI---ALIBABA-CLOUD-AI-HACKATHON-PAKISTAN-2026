@@ -35,7 +35,7 @@ from ..services.recognition import (
     similarity_from_distance,
 )
 
-log = logging.getLogger("psl.recognize")
+log = logging.getLogger("ishara.recognize")
 router = APIRouter(tags=["recognition"])
 
 FALLBACK_CONFIG = {"tau_accept": 0.55, "delta_margin": 0.15, "sigma": 0.35}

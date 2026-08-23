@@ -8,7 +8,7 @@ One application screen. No required scrolling on the demo laptop.
 
 ```text
 ┌──────────────────────────────────────────────────────────────────┐
-│ PSL Bridge   Patient → Doctor | Doctor → Patient   + New   Dr. A │
+│ Ishara AI   Patient → Doctor | Doctor → Patient   + New   Dr. A │
 ├───────────────────────────────┬──────────────────────────────────┤
 │                               │ Status                           │
 │       LIVE CAMERA             │ Recognized: CHEST PAIN           │
@@ -25,7 +25,7 @@ One application screen. No required scrolling on the demo laptop.
 
 ## Header
 
-- PSL Bridge brand.
+- Ishara AI brand.
 - Two-mode switch.
 - `+ New Conversation`.
 - Signed-in staff name and logout **when staff are signed in**.

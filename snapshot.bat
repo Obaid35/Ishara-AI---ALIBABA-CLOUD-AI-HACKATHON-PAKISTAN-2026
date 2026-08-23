@@ -1,6 +1,6 @@
 @echo off
 chcp 65001 >nul
-title PSL Bridge - export snapshot
+title Ishara AI - export snapshot
 
 cd /d "%~dp0backend"
 

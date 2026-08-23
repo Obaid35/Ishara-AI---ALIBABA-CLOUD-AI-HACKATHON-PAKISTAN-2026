@@ -41,7 +41,7 @@ export default function LoginPage() {
               <path d="M7 11V9a1.5 1.5 0 0 0-3 0v4a8 8 0 0 0 8 8h1a7 7 0 0 0 7-7v-3" />
             </svg>
           </div>
-          <h1 className="text-xl font-semibold tracking-tight">PSL Bridge</h1>
+          <h1 className="text-xl font-semibold tracking-tight">Ishara AI</h1>
           <p className="text-sm text-muted mt-1">Staff sign in</p>
         </div>
 

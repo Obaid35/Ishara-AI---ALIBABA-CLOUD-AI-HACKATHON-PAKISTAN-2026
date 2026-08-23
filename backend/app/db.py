@@ -15,7 +15,7 @@ from sqlalchemy.orm import DeclarativeBase, Session, sessionmaker
 
 from .config import settings
 
-log = logging.getLogger("psl.db")
+log = logging.getLogger("ishara.db")
 
 engine = create_engine(
     settings.database_url,

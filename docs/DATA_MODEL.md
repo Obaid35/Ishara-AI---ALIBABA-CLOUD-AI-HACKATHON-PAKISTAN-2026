@@ -1,6 +1,6 @@
 # Data Model — PostgreSQL
 
-Schema for the PSL Bridge application database. Stack context: [Technology Stack](TECH_STACK.md). Scope tiers and roles: [Application Scope](APPLICATION_SCOPE.md).
+Schema for the Ishara AI application database. Stack context: [Technology Stack](TECH_STACK.md). Scope tiers and roles: [Application Scope](APPLICATION_SCOPE.md).
 
 ## Rules that govern this schema
 

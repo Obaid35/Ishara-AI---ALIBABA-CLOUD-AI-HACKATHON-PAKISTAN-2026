@@ -26,7 +26,7 @@ function Logo() {
         </svg>
       </div>
       <div className="leading-tight">
-        <div className="font-semibold text-[15px] tracking-tight">PSL Bridge</div>
+        <div className="font-semibold text-[15px] tracking-tight">Ishara AI</div>
         <div className="text-[11px] text-muted -mt-0.5">Healthcare communication</div>
       </div>
     </div>

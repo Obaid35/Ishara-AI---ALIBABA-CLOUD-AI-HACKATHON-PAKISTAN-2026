@@ -2,8 +2,8 @@
 
 /** Thin API client. Requests go through the Next rewrite to FastAPI. */
 
-const ACCESS_KEY = "psl.access";
-const REFRESH_KEY = "psl.refresh";
+const ACCESS_KEY = "ishara.access";
+const REFRESH_KEY = "ishara.refresh";
 
 export function getAccessToken(): string | null {
   if (typeof window === "undefined") return null;

@@ -1,13 +1,13 @@
 @echo off
 chcp 65001 >nul
 setlocal enabledelayedexpansion
-title PSL Bridge
+title Ishara AI
 
 cd /d "%~dp0"
 
 echo.
 echo  ==========================================================
-echo   PSL Bridge
+echo   Ishara AI
 echo   Communication assistance only - not diagnostic.
 echo  ==========================================================
 echo.
@@ -136,10 +136,10 @@ call :freeport 3000 Web
 REM ============================================================ 8. start
 echo.
 echo  [..] Starting API on http://localhost:8000
-start "PSL Bridge API" /min cmd /c "cd /d "%~dp0backend" && python -m uvicorn app.main:app --host 127.0.0.1 --port 8000"
+start "Ishara AI API" /min cmd /c "cd /d "%~dp0backend" && python -m uvicorn app.main:app --host 127.0.0.1 --port 8000"
 
 echo  [..] Starting web on http://localhost:3000
-start "PSL Bridge Web" /min cmd /c "cd /d "%~dp0frontend" && npm run start"
+start "Ishara AI Web" /min cmd /c "cd /d "%~dp0frontend" && npm run start"
 
 REM ============================================================ 9. wait for BOTH
 echo.
@@ -165,8 +165,8 @@ if defined APIUP if defined WEBUP goto :ready
 
 if !tries! geq 40 (
   echo.
-  if not defined APIUP echo  [X] The API did not start. Check the "PSL Bridge API" window.
-  if not defined WEBUP echo  [X] The web server did not start. Check the "PSL Bridge Web" window.
+  if not defined APIUP echo  [X] The API did not start. Check the "Ishara AI API" window.
+  if not defined WEBUP echo  [X] The web server did not start. Check the "Ishara AI Web" window.
   goto :fail
 )
 goto :waitloop

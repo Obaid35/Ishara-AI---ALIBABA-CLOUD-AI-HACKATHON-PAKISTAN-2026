@@ -1,6 +1,6 @@
-# PSL Bridge
+# Ishara AI
 
-**PSL Bridge** is a healthcare communication application for two-way communication between Pakistan Sign Language (PSL) users and Urdu-speaking medical staff.
+**Ishara AI** is a healthcare communication application for two-way communication between Pakistan Sign Language (PSL) users and Urdu-speaking medical staff.
 
 ## Core experience
 
@@ -89,7 +89,7 @@ Manual equivalent:
 
 ```bash
 cp .env.example .env                          # .env is gitignored
-createdb psl_bridge
+createdb ishara_ai
 cd backend && python -m app.migrate && python -m app.seed --dev-content
 cd ../frontend && npm install && npm run build && npm run start
 ```

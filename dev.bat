@@ -1,11 +1,11 @@
 @echo off
 chcp 65001 >nul
-title PSL Bridge - development
+title Ishara AI - development
 
 cd /d "%~dp0"
 
 echo.
-echo  PSL Bridge - development mode [hot reload]
+echo  Ishara AI - development mode [hot reload]
 echo.
 
 if not exist ".env" ( echo  [X] .env missing. Run setup.bat first. & pause & exit /b 1 )
@@ -14,10 +14,10 @@ call :freeport 8000
 call :freeport 3000
 
 echo  [..] API   http://localhost:8000  [auto-reload]
-start "PSL Bridge API (dev)" cmd /k "cd /d "%~dp0backend" && python -m uvicorn app.main:app --host 127.0.0.1 --port 8000 --reload"
+start "Ishara AI API (dev)" cmd /k "cd /d "%~dp0backend" && python -m uvicorn app.main:app --host 127.0.0.1 --port 8000 --reload"
 
 echo  [..] Web   http://localhost:3000  [hot reload]
-start "PSL Bridge Web (dev)" cmd /k "cd /d "%~dp0frontend" && npm run dev"
+start "Ishara AI Web (dev)" cmd /k "cd /d "%~dp0frontend" && npm run dev"
 
 echo.
 echo  Both servers run in their own windows with live logs.

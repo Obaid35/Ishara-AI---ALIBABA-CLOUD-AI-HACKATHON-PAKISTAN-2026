@@ -14,7 +14,7 @@ const urdu = Noto_Sans_Arabic({
 });
 
 export const metadata: Metadata = {
-  title: "PSL Bridge",
+  title: "Ishara AI",
   description:
     "Healthcare communication between Pakistan Sign Language users and Urdu-speaking " +
     "medical staff. Communication assistance only — not diagnostic.",

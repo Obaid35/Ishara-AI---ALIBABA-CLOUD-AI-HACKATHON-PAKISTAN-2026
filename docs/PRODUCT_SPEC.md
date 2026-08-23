@@ -2,7 +2,7 @@
 
 ## Summary
 
-PSL Bridge is a healthcare communication application. Its centre is a **one-screen communication interface** with two modes:
+Ishara AI is a healthcare communication application. Its centre is a **one-screen communication interface** with two modes:
 
 1. **Patient → Doctor**
 2. **Doctor → Patient**

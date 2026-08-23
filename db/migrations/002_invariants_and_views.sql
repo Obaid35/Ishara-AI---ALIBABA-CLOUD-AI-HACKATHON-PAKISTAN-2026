@@ -1,4 +1,4 @@
--- PSL Bridge — content-safety invariants and reporting views
+-- Ishara AI — content-safety invariants and reporting views
 -- Implements docs/DATA_MODEL.md "Invariants" and "Views".
 -- These encode the project's safety rules in the one place that cannot be
 -- forgotten under deadline pressure.

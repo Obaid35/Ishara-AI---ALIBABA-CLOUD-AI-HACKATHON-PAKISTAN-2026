@@ -232,7 +232,7 @@ Keys: `DATABASE_URL`, `POSTGRES_*`, `JWT_SECRET`, `SEED_ADMIN_EMAIL`, `SEED_ADMI
 ### Database
 
 ```bash
-createdb psl_bridge
+createdb ishara_ai
 # apply migrations from db/migrations, then seed:
 #   roles, initial admin, phrase categories, candidate vocabulary (all disabled)
 ```
@@ -337,7 +337,7 @@ in `backend/scripts/generate_audio.py`, and `transcribe()` in
 ## Repository structure
 
 ```text
-PSL-BRIDGE/
+ISHARA-AI/
 ├── setup.bat          one-time setup: deps, database, migrations, seed
 ├── run.bat            start the app (production build)
 ├── dev.bat            start with hot reload

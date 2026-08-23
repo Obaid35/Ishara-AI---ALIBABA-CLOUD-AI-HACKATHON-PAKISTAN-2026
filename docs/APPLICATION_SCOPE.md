@@ -1,6 +1,6 @@
 # Application Scope
 
-PSL Bridge is now defined as a **proper application**, not only a hackathon demo. This document defines what that means, what is in each tier, and what must never be traded away to build it.
+Ishara AI is now defined as a **proper application**, not only a hackathon demo. This document defines what that means, what is in each tier, and what must never be traded away to build it.
 
 Supersedes the earlier "no login, no dashboard, no admin" position in [Product Spec](PRODUCT_SPEC.md) and [Requirements](REQUIREMENTS.md) — see D019 in the [Decision Log](DECISIONS_LOG.md).
 

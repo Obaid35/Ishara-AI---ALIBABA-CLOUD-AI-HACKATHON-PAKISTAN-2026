@@ -6,7 +6,7 @@ Make the audience understand the human value before explaining the technology.
 
 ## Opening
 
-> Imagine reaching a hospital in pain, but the doctor cannot understand your language. PSL Bridge is designed to help with a small but important part of that communication gap.
+> Imagine reaching a hospital in pain, but the doctor cannot understand your language. Ishara AI is designed to help with a small but important part of that communication gap.
 
 Do not begin with model or framework names.
 

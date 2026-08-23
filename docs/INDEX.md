@@ -1,6 +1,6 @@
 # Documentation Index
 
-This is the master navigation file for PSL Bridge.
+This is the master navigation file for Ishara AI.
 
 ## Start here
 - [Project Charter](PROJECT_CHARTER.md) — problem, users, boundary

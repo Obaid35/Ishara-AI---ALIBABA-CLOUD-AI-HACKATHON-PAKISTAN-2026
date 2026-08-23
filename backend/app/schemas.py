@@ -2,7 +2,7 @@
 
 `AccountEmail` is deliberately more permissive than pydantic's EmailStr:
 hospital staff accounts legitimately use internal domains such as
-`admin@pslbridge.local` or `nurse@hospital.internal`, which strict RFC
+`admin@isharaai.local` or `nurse@hospital.internal`, which strict RFC
 validators reject as special-use names. We validate shape, not deliverability.
 """
 

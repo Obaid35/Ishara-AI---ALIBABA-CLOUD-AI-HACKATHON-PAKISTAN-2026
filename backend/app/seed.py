@@ -271,14 +271,14 @@ def _enable_dev_content(db) -> None:
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description="Seed the PSL Bridge database.")
+    parser = argparse.ArgumentParser(description="Seed the Ishara AI database.")
     parser.add_argument(
         "--dev-content",
         action="store_true",
         help="Enable a working development set so the UI can be demonstrated.",
     )
     args = parser.parse_args()
-    print("Seeding PSL Bridge database...")
+    print("Seeding Ishara AI database...")
     seed(dev_content=args.dev_content)
     print("Done.")
 

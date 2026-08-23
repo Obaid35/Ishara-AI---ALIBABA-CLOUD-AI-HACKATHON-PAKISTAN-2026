@@ -1,9 +1,9 @@
 @echo off
 chcp 65001 >nul
-title PSL Bridge - stop
+title Ishara AI - stop
 
 echo.
-echo  Stopping PSL Bridge...
+echo  Stopping Ishara AI...
 
 call :freeport 8000 API
 call :freeport 3000 Web

@@ -21,7 +21,7 @@ class Settings(BaseSettings):
     model_config = SettingsConfigDict(env_file=REPO_ROOT / ".env", extra="ignore")
 
     # --- database ---
-    database_url: str = "postgresql+psycopg2://postgres:postgres@localhost:5432/psl_bridge"
+    database_url: str = "postgresql+psycopg2://postgres:postgres@localhost:5432/ishara_ai"
 
     # --- auth ---
     jwt_secret: str = "change_me"
@@ -30,7 +30,7 @@ class Settings(BaseSettings):
     refresh_token_days: int = 7
 
     # --- seed ---
-    seed_admin_email: str = "admin@pslbridge.local"
+    seed_admin_email: str = "admin@isharaai.local"
     seed_admin_password: str = "change_me"
 
     # --- speech ---

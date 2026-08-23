@@ -1,4 +1,4 @@
-"""PSL Bridge API.
+"""Ishara AI API.
 
 Run:  uvicorn app.main:app --reload --port 8000
 
@@ -22,7 +22,7 @@ from .routers import admin, auth, content, health, recognize, speech, stt_router
 from .services.recognition import is_stub
 
 logging.basicConfig(level=logging.INFO, format="%(levelname)s %(name)s: %(message)s")
-log = logging.getLogger("psl")
+log = logging.getLogger("ishara")
 
 
 @asynccontextmanager
@@ -41,7 +41,7 @@ async def lifespan(app: FastAPI):
 
 
 app = FastAPI(
-    title="PSL Bridge API",
+    title="Ishara AI API",
     version="0.1.0",
     description=(
         "Healthcare communication between Pakistan Sign Language users and "
@@ -77,7 +77,7 @@ app.mount(
 @app.get("/")
 def root():
     return {
-        "name": "PSL Bridge API",
+        "name": "Ishara AI API",
         "docs": "/docs",
         "health": "/api/health",
         "boundary": "Communication assistance only. No diagnosis, no treatment advice.",
