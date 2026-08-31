@@ -19,6 +19,11 @@ const TOGGLES: [string, string, string][] = [
     "Doctor voice input",
     "Let the doctor speak instead of tapping. Speech only selects a verified phrase.",
   ],
+  [
+    "guidance_panel_enabled",
+    "Sign guide",
+    "Show a help button on the patient screen that plays the reference video for each supported sign. Useful while a team is learning the vocabulary.",
+  ],
 ];
 
 export default function SettingsPage() {

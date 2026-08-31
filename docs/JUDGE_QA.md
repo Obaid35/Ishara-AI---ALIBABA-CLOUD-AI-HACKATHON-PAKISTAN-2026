@@ -17,6 +17,21 @@ No. Communication assistance only.
 ### Can the doctor reply?
 Yes, through a small fixed library of verified PSL medical responses, grouped by category.
 
+### What happens with a fluent signer who does not pause?
+It will not work, and we say so before anyone asks. A capture ends only after roughly 320 ms of stillness, so a signer who runs one sign into the next is never segmented and the capture eventually aborts. Everything measured so far comes from deliberate signing.
+
+The fix is known, not hand-waved: sliding-window sign spotting, the same idea as wake-word detection — score a rolling buffer continuously instead of waiting for the movement to end. Our `subsequence_distance()` already locates a reference inside a longer capture, so the scoring half exists; the continuous scan, the overlap suppression and new thresholds do not.
+
+We did not build it during the build phase because it cannot be validated without fluent signers to test on, and replacing a measured component with an untested one before a deadline is the wrong trade. It is Phase 2 in the roadmap with that availability as its entry condition.
+
+### Is a real Deaf patient not going to sign much faster than your tester?
+Yes, and faster than the references too. This is the same limitation as above and we do not claim otherwise. It is the main reason the product is positioned as a triage aid for the first minute of contact rather than a conversation tool.
+
+### A patient gives context — what, how, when, why. Can you carry that?
+No. A recognised sign is a concept, not a sentence, and each one is bound to a single pre-written reviewed phrase. Grammar, facial markers, spatial reference and tense are not captured at all.
+
+We are not alone in this: continuous sign language translation is unsolved for languages with far more data than PSL. The honest comparison is not our system against an interpreter — we lose that every time. It is our system against what a Deaf patient actually has at 2 a.m. in an emergency room with no interpreter present, which is nothing.
+
 ## Data and method
 
 ### Did you use existing PSL videos?

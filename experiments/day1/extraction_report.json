@@ -3,29 +3,350 @@
   "mediapipe": "1.0.1",
   "signs": [
     {
-      "code": "I_HAVE_A_COMPLAINT",
+      "code": "PAIN_IN_EYE",
+      "source": "pain_in_eye_1680111205_15959.mp4",
+      "source_fps": 29.97,
+      "total_frames": 374,
+      "hand_visibility": 0.409,
+      "samples": [
+        {
+          "name": "PAIN_IN_EYE_ref_01",
+          "start_s": 3.24,
+          "end_s": 6.31,
+          "duration_s": 3.07,
+          "frames": 92,
+          "sequence": "experiments/day1/references/PAIN_IN_EYE_ref_01.npz",
+          "clip": "experiments/day1/clips/PAIN_IN_EYE_ref_01.mp4"
+        },
+        {
+          "name": "PAIN_IN_EYE_ref_02",
+          "start_s": 7.97,
+          "end_s": 10.91,
+          "duration_s": 2.94,
+          "frames": 88,
+          "sequence": "experiments/day1/references/PAIN_IN_EYE_ref_02.npz",
+          "clip": "experiments/day1/clips/PAIN_IN_EYE_ref_02.mp4"
+        }
+      ]
+    },
+    {
+      "code": "DOCTOR",
+      "source": "doctor_1622524762_18002.mp4",
+      "source_fps": 24.78,
+      "total_frames": 229,
+      "hand_visibility": 0.498,
+      "samples": [
+        {
+          "name": "DOCTOR_ref_01",
+          "start_s": 2.02,
+          "end_s": 4.12,
+          "duration_s": 2.1,
+          "frames": 63,
+          "sequence": "experiments/day1/references/DOCTOR_ref_01.npz",
+          "clip": "experiments/day1/clips/DOCTOR_ref_01.mp4"
+        },
+        {
+          "name": "DOCTOR_ref_02",
+          "start_s": 5.53,
+          "end_s": 7.95,
+          "duration_s": 2.42,
+          "frames": 73,
+          "sequence": "experiments/day1/references/DOCTOR_ref_02.npz",
+          "clip": "experiments/day1/clips/DOCTOR_ref_02.mp4"
+        }
+      ]
+    },
+    {
+      "code": "FEVER",
+      "source": "fever_1621355818_82670.mp4",
+      "source_fps": 24.78,
+      "total_frames": 222,
+      "hand_visibility": 0.414,
+      "samples": [
+        {
+          "name": "FEVER_ref_01",
+          "start_s": 1.57,
+          "end_s": 2.34,
+          "duration_s": 0.77,
+          "frames": 23,
+          "sequence": "experiments/day1/references/FEVER_ref_01.npz",
+          "clip": "experiments/day1/clips/FEVER_ref_01.mp4"
+        },
+        {
+          "name": "FEVER_ref_02",
+          "start_s": 2.83,
+          "end_s": 3.75,
+          "duration_s": 0.93,
+          "frames": 28,
+          "sequence": "experiments/day1/references/FEVER_ref_02.npz",
+          "clip": "experiments/day1/clips/FEVER_ref_02.mp4"
+        },
+        {
+          "name": "FEVER_ref_03",
+          "start_s": 5.05,
+          "end_s": 5.97,
+          "duration_s": 0.93,
+          "frames": 28,
+          "sequence": "experiments/day1/references/FEVER_ref_03.npz",
+          "clip": "experiments/day1/clips/FEVER_ref_03.mp4"
+        },
+        {
+          "name": "FEVER_ref_04",
+          "start_s": 6.54,
+          "end_s": 7.55,
+          "duration_s": 1.01,
+          "frames": 30,
+          "sequence": "experiments/day1/references/FEVER_ref_04.npz",
+          "clip": "experiments/day1/clips/FEVER_ref_04.mp4"
+        }
+      ]
+    },
+    {
+      "code": "HELP",
+      "source": "help_1623253688_82961.mp4",
+      "source_fps": 24.84,
+      "total_frames": 304,
+      "hand_visibility": 0.299,
+      "samples": [
+        {
+          "name": "HELP_ref_01",
+          "start_s": 3.14,
+          "end_s": 5.31,
+          "duration_s": 2.17,
+          "frames": 65,
+          "sequence": "experiments/day1/references/HELP_ref_01.npz",
+          "clip": "experiments/day1/clips/HELP_ref_01.mp4"
+        },
+        {
+          "name": "HELP_ref_02",
+          "start_s": 6.4,
+          "end_s": 8.66,
+          "duration_s": 2.25,
+          "frames": 68,
+          "sequence": "experiments/day1/references/HELP_ref_02.npz",
+          "clip": "experiments/day1/clips/HELP_ref_02.mp4"
+        }
+      ]
+    },
+    {
+      "code": "TWO",
+      "source": "two_1680119661_32772.mp4",
+      "source_fps": 23.98,
+      "total_frames": 261,
+      "hand_visibility": 0.391,
+      "samples": [
+        {
+          "name": "TWO_ref_01",
+          "start_s": 2.34,
+          "end_s": 3.5,
+          "duration_s": 1.17,
+          "frames": 35,
+          "sequence": "experiments/day1/references/TWO_ref_01.npz",
+          "clip": "experiments/day1/clips/TWO_ref_01.mp4"
+        },
+        {
+          "name": "TWO_ref_02",
+          "start_s": 6.34,
+          "end_s": 7.72,
+          "duration_s": 1.38,
+          "frames": 41,
+          "sequence": "experiments/day1/references/TWO_ref_02.npz",
+          "clip": "experiments/day1/clips/TWO_ref_02.mp4"
+        },
+        {
+          "name": "TWO_ref_03",
+          "start_s": 8.26,
+          "end_s": 9.05,
+          "duration_s": 0.79,
+          "frames": 24,
+          "sequence": "experiments/day1/references/TWO_ref_03.npz",
+          "clip": "experiments/day1/clips/TWO_ref_03.mp4"
+        }
+      ]
+    },
+    {
+      "code": "DAY",
+      "source": "day_1619868722_79149.mp4",
+      "source_fps": 24.82,
+      "total_frames": 270,
+      "hand_visibility": 0.515,
+      "samples": [
+        {
+          "name": "DAY_ref_01",
+          "start_s": 1.65,
+          "end_s": 4.15,
+          "duration_s": 2.5,
+          "frames": 75,
+          "sequence": "experiments/day1/references/DAY_ref_01.npz",
+          "clip": "experiments/day1/clips/DAY_ref_01.mp4"
+        },
+        {
+          "name": "DAY_ref_02",
+          "start_s": 4.47,
+          "end_s": 5.24,
+          "duration_s": 0.77,
+          "frames": 23,
+          "sequence": "experiments/day1/references/DAY_ref_02.npz",
+          "clip": "experiments/day1/clips/DAY_ref_02.mp4"
+        },
+        {
+          "name": "DAY_ref_03",
+          "start_s": 6.33,
+          "end_s": 8.26,
+          "duration_s": 1.93,
+          "frames": 58,
+          "sequence": "experiments/day1/references/DAY_ref_03.npz",
+          "clip": "experiments/day1/clips/DAY_ref_03.mp4"
+        }
+      ]
+    },
+    {
+      "code": "I_AM_SICK",
+      "source": "i_am_sick_1669962334_53967.mp4",
+      "source_fps": 50.0,
+      "total_frames": 431,
+      "hand_visibility": 0.499,
+      "samples": [
+        {
+          "name": "I_AM_SICK_ref_01",
+          "start_s": 1.26,
+          "end_s": 3.06,
+          "duration_s": 1.8,
+          "frames": 54,
+          "sequence": "experiments/day1/references/I_AM_SICK_ref_01.npz",
+          "clip": "experiments/day1/clips/I_AM_SICK_ref_01.mp4"
+        },
+        {
+          "name": "I_AM_SICK_ref_02",
+          "start_s": 5.96,
+          "end_s": 7.66,
+          "duration_s": 1.7,
+          "frames": 51,
+          "sequence": "experiments/day1/references/I_AM_SICK_ref_02.npz",
+          "clip": "experiments/day1/clips/I_AM_SICK_ref_02.mp4"
+        }
+      ]
+    },
+    {
+      "code": "HERE_I_AM",
+      "source": "Here_I_am_1687445175_26162.mp4",
+      "source_fps": 50.0,
+      "total_frames": 382,
+      "hand_visibility": 0.558,
+      "samples": [
+        {
+          "name": "HERE_I_AM_ref_01",
+          "start_s": 0.26,
+          "end_s": 2.72,
+          "duration_s": 2.46,
+          "frames": 74,
+          "sequence": "experiments/day1/references/HERE_I_AM_ref_01.npz",
+          "clip": "experiments/day1/clips/HERE_I_AM_ref_01.mp4"
+        },
+        {
+          "name": "HERE_I_AM_ref_02",
+          "start_s": 3.9,
+          "end_s": 6.64,
+          "duration_s": 2.74,
+          "frames": 82,
+          "sequence": "experiments/day1/references/HERE_I_AM_ref_02.npz",
+          "clip": "experiments/day1/clips/HERE_I_AM_ref_02.mp4"
+        }
+      ]
+    },
+    {
+      "code": "I_HAVE_A_QUESTION",
+      "source": "I_have_a_question_1622731954_64380.mp4",
+      "source_fps": 24.88,
+      "total_frames": 420,
+      "hand_visibility": 0.398,
+      "samples": [
+        {
+          "name": "I_HAVE_A_QUESTION_ref_01",
+          "start_s": 4.62,
+          "end_s": 8.6,
+          "duration_s": 3.98,
+          "frames": 119,
+          "sequence": "experiments/day1/references/I_HAVE_A_QUESTION_ref_01.npz",
+          "clip": "experiments/day1/clips/I_HAVE_A_QUESTION_ref_01.mp4"
+        },
+        {
+          "name": "I_HAVE_A_QUESTION_ref_02",
+          "start_s": 9.16,
+          "end_s": 12.66,
+          "duration_s": 3.5,
+          "frames": 105,
+          "sequence": "experiments/day1/references/I_HAVE_A_QUESTION_ref_02.npz",
+          "clip": "experiments/day1/clips/I_HAVE_A_QUESTION_ref_02.mp4"
+        }
+      ]
+    },
+    {
+      "code": "I",
       "source": "I_have_a_complaint_1666698120_32698.mp4",
       "source_fps": 50.0,
       "total_frames": 411,
-      "hand_visibility": 0.511,
       "samples": [
         {
-          "name": "I_HAVE_A_COMPLAINT_ref_01",
+          "name": "I_ref_01",
           "start_s": 0.68,
-          "end_s": 3.1,
-          "duration_s": 2.42,
-          "frames": 73,
-          "sequence": "experiments/day1/references/I_HAVE_A_COMPLAINT_ref_01.npz",
-          "clip": "experiments/day1/clips/I_HAVE_A_COMPLAINT_ref_01.mp4"
+          "end_s": 1.8,
+          "duration_s": 1.12,
+          "frames": 34,
+          "sequence": "experiments/day1/references/I_ref_01.npz",
+          "clip": "experiments/day1/clips/I_ref_01.mp4"
         },
         {
-          "name": "I_HAVE_A_COMPLAINT_ref_02",
+          "name": "I_ref_02",
           "start_s": 4.82,
+          "end_s": 5.62,
+          "duration_s": 0.8,
+          "frames": 24,
+          "sequence": "experiments/day1/references/I_ref_02.npz",
+          "clip": "experiments/day1/clips/I_ref_02.mp4"
+        }
+      ]
+    },
+    {
+      "code": "COMPLAINT",
+      "source": "I_have_a_complaint_1666698120_32698.mp4",
+      "source_fps": 50.0,
+      "total_frames": 411,
+      "samples": [
+        {
+          "name": "COMPLAINT_ref_01",
+          "start_s": 2.26,
+          "end_s": 3.1,
+          "duration_s": 0.84,
+          "frames": 25,
+          "sequence": "experiments/day1/references/COMPLAINT_ref_01.npz",
+          "clip": "experiments/day1/clips/COMPLAINT_ref_01.mp4"
+        },
+        {
+          "name": "COMPLAINT_ref_02",
+          "start_s": 5.68,
           "end_s": 7.32,
-          "duration_s": 2.5,
-          "frames": 75,
-          "sequence": "experiments/day1/references/I_HAVE_A_COMPLAINT_ref_02.npz",
-          "clip": "experiments/day1/clips/I_HAVE_A_COMPLAINT_ref_02.mp4"
+          "duration_s": 1.64,
+          "frames": 49,
+          "sequence": "experiments/day1/references/COMPLAINT_ref_02.npz",
+          "clip": "experiments/day1/clips/COMPLAINT_ref_02.mp4"
+        }
+      ]
+    },
+    {
+      "code": "I",
+      "source": "I_have_a_question_1622731954_64380.mp4",
+      "source_fps": 24.88,
+      "total_frames": 420,
+      "samples": [
+        {
+          "name": "I_ref_03",
+          "start_s": 4.62,
+          "end_s": 5.47,
+          "duration_s": 0.84,
+          "frames": 25,
+          "sequence": "experiments/day1/references/I_ref_03.npz",
+          "clip": "experiments/day1/clips/I_ref_03.mp4"
         }
       ]
     }

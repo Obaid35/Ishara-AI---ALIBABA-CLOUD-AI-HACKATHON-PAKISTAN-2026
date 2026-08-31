@@ -302,6 +302,28 @@ def reference_dir():
     return settings.repo_root / "experiments" / "day1" / "references"
 
 
+def live_vocabulary() -> set[str] | None:
+    """Sign codes the database currently allows in production.
+
+    None means "could not ask" -- the caller then loads everything, because
+    refusing to recognise anything is worse than a stale vocabulary.
+    """
+    try:
+        from ..db import SessionLocal, db_state
+        from sqlalchemy import text as _text
+
+        if not (db_state.available or db_state.probe()):
+            return None
+        db = SessionLocal()
+        try:
+            rows = db.execute(_text("SELECT code FROM v_production_vocabulary")).all()
+        finally:
+            db.close()
+        return {r[0] for r in rows} or None
+    except Exception:  # noqa: BLE001
+        return None
+
+
 def select_engine() -> tuple[RecognitionEngine, str]:
     """Pick the real engine when references are available, else the stub.
 
@@ -324,7 +346,7 @@ def select_engine() -> tuple[RecognitionEngine, str]:
         return StubEngine(), f"DTW engine unavailable ({exc})"
 
     library = ReferenceLibrary()
-    loaded = library.load_dir(directory)
+    loaded = library.load_dir(directory, allowed=live_vocabulary())
     if loaded == 0:
         return StubEngine(), "no reference sequences found - run extract_references.py"
 

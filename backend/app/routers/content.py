@@ -180,3 +180,84 @@ def reference_clips():
             "samples": len(samples),
         }
     return {"clips": clips}
+
+
+# ------------------------------------------------------------------ settings
+
+# Only these keys are readable without a login. The settings table also holds
+# operational values an anonymous caller has no business seeing, so this is an
+# allowlist rather than a blocklist: a new admin-only setting stays private by
+# default instead of leaking the moment somebody adds it.
+PUBLIC_SETTINGS = {
+    "primary_output_language": "urdu",
+    "english_text_enabled": False,
+    "english_speech_enabled": False,
+    "overlay_enabled": False,
+    "doctor_voice_input_enabled": False,
+    "guidance_panel_enabled": False,
+}
+
+
+@router.get("/settings")
+def public_settings(db: Session | None = Depends(get_db_optional)):
+    """Display flags the patient screen needs before anyone has logged in."""
+    values = dict(PUBLIC_SETTINGS)
+    if db is not None:
+        rows = db.execute(
+            text("SELECT key, value FROM settings WHERE key = ANY(:keys)"),
+            {"keys": list(PUBLIC_SETTINGS)},
+        )
+        for key, value in rows:
+            values[key] = value
+    return {"settings": values}
+
+
+# ------------------------------------------------------------------ guidance
+
+@router.get("/guidance")
+def guidance(db: Session | None = Depends(get_db_optional)):
+    """What to perform, for someone who does not remember the movement.
+
+    Each entry pairs a supported sign with the reference video range to copy
+    and the exact sentence that sign produces. Only the live vocabulary is
+    listed: showing a sign the recogniser cannot match would teach a movement
+    that never works.
+
+    Returns entries even when the panel is switched off — the flag controls
+    whether the screen offers it, and that decision belongs to the caller.
+    """
+    if db is None:
+        return {"source": "snapshot", "signs": []}
+
+    rows = db.execute(text(
+        "SELECT s.code, s.urdu_meaning, s.english_meaning, s.regional_variant_note, "
+        "       (SELECT pm.urdu_text FROM patient_messages pm "
+        "         WHERE pm.is_enabled "
+        "           AND (SELECT count(*) FROM message_concepts mc "
+        "                 WHERE mc.message_id = pm.id) = 1 "
+        "           AND EXISTS (SELECT 1 FROM message_concepts mc "
+        "                        WHERE mc.message_id = pm.id AND mc.sign_id = s.id) "
+        "         LIMIT 1) AS urdu_text, "
+        "       (SELECT count(*) FROM sign_references r "
+        "         WHERE r.sign_id = s.id AND r.is_active) AS reference_count "
+        "  FROM signs s "
+        " WHERE s.code IN (SELECT code FROM v_production_vocabulary) "
+        " ORDER BY s.code"
+    )).mappings().all()
+
+    clips = reference_clips()["clips"]
+    signs = []
+    for row in rows:
+        clip = clips.get(row["code"]) or {}
+        signs.append({
+            "code": row["code"],
+            "urdu_meaning": row["urdu_meaning"],
+            "english_meaning": row["english_meaning"],
+            "urdu_text": row["urdu_text"],
+            "note": row["regional_variant_note"],
+            "reference_count": row["reference_count"],
+            "video": clip.get("video"),
+            "start_s": clip.get("start_s"),
+            "end_s": clip.get("end_s"),
+        })
+    return {"source": "database", "signs": signs}

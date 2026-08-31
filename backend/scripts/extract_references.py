@@ -71,11 +71,37 @@ SOURCES: dict[str, str] = {
     "I_AM_SICK": "i_am_sick_1669962334_53967.mp4",
     "HERE_I_AM": "Here_I_am_1687445175_26162.mp4",
     "I_HAVE_A_QUESTION": "I_have_a_question_1622731954_64380.mp4",
-    "I_HAVE_A_COMPLAINT": "I_have_a_complaint_1666698120_32698.mp4",
+    # Extracted as its two component signs instead - see COMPOUND_SPLITS.
+    # "I_HAVE_A_COMPLAINT": "I_have_a_complaint_1666698120_32698.mp4",
     # COUGH removed from the current experiment: its three samples disagreed
     # with each other (0.32-0.83 apart) and ref_03 matched DOCTOR at a +0.1%
     # margin. Revisit with a different source clip after the live 4-sign test.
     # "COUGH": "cough_1621343677_67000.mp4",
+}
+
+# --------------------------------------------------------------- compound splits
+# Some dictionary clips are a phrase, not one sign. "I have a complaint" is
+# I + COMPLAINT: at the default merge gap it breaks into four pieces, and the
+# distance matrix shows pieces 1 and 3 are the same movement (0.198), pieces 2
+# and 4 are the same movement (0.268), while 1 and 2 are unrelated (0.871).
+#
+# This matters beyond tidiness. With a real sign for "I", the subject of a
+# sentence comes from something the signer actually performed rather than being
+# supplied by our template (docs/KNOWN_LIMITATIONS.md).
+#
+# Piece numbers are 1-based, at merge gap SPLIT_MERGE_GAP_S.
+SPLIT_MERGE_GAP_S = 0.28
+
+COMPOUND_SPLITS: dict[str, dict[str, list[int]]] = {
+    "I_have_a_complaint_1666698120_32698.mp4": {
+        "I": [1, 3],
+        "COMPLAINT": [2, 4],
+    },
+    # Only the opening piece is confidently the same "I" (0.332); the rest of
+    # this clip does not separate cleanly, so nothing else is taken from it.
+    "I_have_a_question_1622731954_64380.mp4": {
+        "I": [1],
+    },
 }
 
 # Samples excluded by hand after review. FEVER_ref_02 sat 1.2 away from both
@@ -292,6 +318,61 @@ def process(code: str, filename: str, make_landmarker, inspect_only: bool,
     }
 
 
+def process_splits(make_landmarker, inspect_only: bool) -> list[dict]:
+    """Write the pieces of a compound clip out as separate signs."""
+    report = []
+    for filename, mapping in COMPOUND_SPLITS.items():
+        source = SOURCE_DIR / filename
+        if not source.exists():
+            print(f"  [X] split source missing: {filename}")
+            continue
+
+        with make_landmarker() as holistic:
+            sequence, images, fps = read_video(source, holistic)
+        segments = find_segments(lm.motion_energy(sequence), fps, SPLIT_MERGE_GAP_S)
+
+        print()
+        print(f"  split {filename}  ({len(segments)} pieces)")
+        for code, indices in mapping.items():
+            saved = []
+            # Continue the numbering rather than restarting it: the same sign
+            # can be extracted from more than one source clip, and restarting
+            # would overwrite what an earlier clip contributed.
+            existing = len(list(SEQ_DIR.glob(f"{code}_ref_*.npz"))) if SEQ_DIR.exists() else 0
+            for offset, piece in enumerate(indices, start=1):
+                order = existing + offset
+                if piece < 1 or piece > len(segments):
+                    print(f"    [X] {code}: piece {piece} does not exist")
+                    continue
+                segment = segments[piece - 1]
+                name = f"{code}_ref_{order:02d}"
+                print(f"    {name:22} piece {piece}  "
+                      f"{segment.start_s:5.2f}s - {segment.end_s:5.2f}s")
+                if inspect_only:
+                    continue
+                clean = lm.resample(sequence.slice(segment.start, segment.end), 30.0)
+                SEQ_DIR.mkdir(parents=True, exist_ok=True)
+                lm.save(SEQ_DIR / f"{name}.npz", clean, sign_code=code,
+                        source_video=filename,
+                        start_s=round(segment.start_s, 3),
+                        end_s=round(segment.end_s, 3),
+                        source_fps=round(fps, 3))
+                write_clip(images, segment, CLIP_DIR / f"{name}.mp4", fps)
+                saved.append({"name": name,
+                              "start_s": round(segment.start_s, 2),
+                              "end_s": round(segment.end_s, 2),
+                              "duration_s": round(segment.duration_s, 2),
+                              "frames": len(clean),
+                              "sequence": f"experiments/day1/references/{name}.npz",
+                              "clip": f"experiments/day1/clips/{name}.mp4"})
+            if saved:
+                report.append({"code": code, "source": filename,
+                               "source_fps": round(fps, 2),
+                               "total_frames": len(sequence),
+                               "samples": saved})
+    return report
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description="Extract PSL reference samples.")
     parser.add_argument("--inspect", action="store_true",
@@ -342,6 +423,9 @@ def main() -> None:
     for code, filename in targets.items():
         gap = args.merge_gap if args.merge_gap is not None else             MERGE_GAP_OVERRIDE.get(code, MERGE_GAP_S)
         report.append(process(code, filename, make_landmarker, args.inspect, gap))
+
+    if not args.only:
+        report += process_splits(make_landmarker, args.inspect)
 
     total = sum(len(r.get("samples", [])) for r in report)
     print(f"\n  {total} reference sample(s) across {len(report)} sign(s)")

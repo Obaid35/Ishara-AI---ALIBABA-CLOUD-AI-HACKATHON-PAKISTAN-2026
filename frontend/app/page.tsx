@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import CameraPanel from "@/components/CameraPanel";
 import DoctorMode from "@/components/DoctorMode";
+import GuidancePanel from "@/components/GuidancePanel";
 import Header, { type Mode } from "@/components/Header";
 import MessageCard from "@/components/MessageCard";
 import SessionHistory from "@/components/SessionHistory";
@@ -239,6 +240,9 @@ export default function CommunicationScreen() {
           No internet required
         </p>
       </footer>
+
+      {/* Renders nothing unless an admin has enabled it. */}
+      <GuidancePanel />
     </div>
   );
 }

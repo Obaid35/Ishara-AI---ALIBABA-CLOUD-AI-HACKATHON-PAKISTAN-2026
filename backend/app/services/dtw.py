@@ -196,13 +196,19 @@ class ReferenceLibrary:
     def sign_codes(self) -> list[str]:
         return sorted({r.sign_code for r in self.references})
 
-    def load_dir(self, directory: Path) -> int:
+    def load_dir(self, directory: Path, allowed: set[str] | None = None) -> int:
+        """Load every reference on disk, optionally restricted to `allowed`.
+
+        The database decides which signs are live (v_production_vocabulary).
+        Without this filter a sign disabled for being unreliable would still
+        compete for every match, and could win one.
+        """
         directory = Path(directory)
         if not directory.exists():
             log.warning("Reference directory missing: %s", directory)
             return 0
 
-        loaded = 0
+        loaded = skipped = 0
         for path in sorted(directory.glob("*.npz")):
             try:
                 sequence, meta = lm.load(path)
@@ -215,9 +221,14 @@ class ReferenceLibrary:
                 continue
 
             code = str(meta.get("sign_code") or path.stem.rsplit("_ref_", 1)[0])
+            if allowed is not None and code not in allowed:
+                skipped += 1
+                continue
             self.references.append(Reference(path.stem, code, sequence, meta))
             loaded += 1
 
+        if skipped:
+            log.info("Ignored %d reference(s) for signs not in the live vocabulary", skipped)
         log.info("Loaded %d reference(s) covering %d sign(s)", loaded, len(self.sign_codes))
         return loaded
 

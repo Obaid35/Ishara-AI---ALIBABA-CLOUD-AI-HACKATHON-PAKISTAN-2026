@@ -23,10 +23,51 @@
 
 ## Phase 2 — Continuous medical communication
 
-- better segmentation without forced pauses;
+### Segmentation without forced pauses
+
+The current recogniser waits for the hands to stop: a capture ends only after
+`K_END` consecutive frames below `THETA_END`, roughly 320 ms of stillness, then
+a 600 ms refractory period. A deliberate signer produces those pauses. **A
+fluent signer does not** — signs run into one another, so `below_count` never
+reaches `K_END`, the capture runs to `T_MAX_MS` and aborts. Fluent signing is
+therefore not supported today, and this is the single largest gap between what
+the system does and what a Deaf patient actually signs.
+
+The replacement is **sign spotting**, the technique behind wake-word detection:
+stop asking "has the movement finished?" and start asking "is this sign present
+anywhere in the last few seconds?"
+
+- keep a rolling buffer of roughly the last 4 seconds of landmarks;
+- every ~200 ms score the whole buffer against every reference;
+- emit a sign when its distance dips below threshold, rather than when motion
+  stops;
+- suppress overlapping detections so one performance yields one decision (D027
+  still holds).
+
+**Half of this already exists.** `subsequence_distance()` scores with free start
+and end on the query axis, so it already locates a reference *inside* a longer
+capture. What is missing is the continuous scan, the suppression scheme, and
+thresholds calibrated for it.
+
+Deliberately **not** attempted during the hackathon build phase. Continuous
+scanning multiplies the scoring cost, and a longer window gives far more chances
+to match something by accident, so it needs its own thresholds and its own
+validation — and that validation requires fluent signers, who were not available
+to the project. Replacing a measured, working component with an untested one
+before a deadline is the wrong trade.
+
+**Entry condition:** fluent PSL signers available for recording and testing.
+Without them this cannot be validated, only guessed at.
+
+### Beyond segmentation
+
 - multi-sign utterances;
 - more natural PSL → Urdu;
 - non-manual markers where linguistically required.
+
+Note that even with all of this, continuous sign language translation remains an
+open research problem for far better-resourced languages than PSL. Phase 2
+widens what the system accepts; it does not turn it into an interpreter.
 
 ## Phase 3 — Doctor interaction
 

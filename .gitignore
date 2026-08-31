@@ -19,3 +19,9 @@ experiments/**/landmarks/
 dist/
 build/
 .DS_Store
+
+# uvicorn logs from a detached dev start
+backend/_uvicorn.out
+backend/_uvicorn.err
+frontend/_next.out
+frontend/_next.err
