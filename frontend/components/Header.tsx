@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { useAuth } from "@/lib/auth";
 import type { Health } from "@/lib/types";
@@ -16,15 +17,16 @@ interface Props {
 function Logo() {
   return (
     <div className="flex items-center gap-2.5">
-      <div className="w-9 h-9 rounded-xl bg-brand flex items-center justify-center shrink-0">
-        <svg viewBox="0 0 24 24" className="w-5 h-5" fill="none" stroke="white" strokeWidth="2"
-             strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-          <path d="M7 11V6a1.5 1.5 0 0 1 3 0v4" />
-          <path d="M10 10V5a1.5 1.5 0 0 1 3 0v5" />
-          <path d="M13 10V6.5a1.5 1.5 0 0 1 3 0V13" />
-          <path d="M7 11V9a1.5 1.5 0 0 0-3 0v4a8 8 0 0 0 8 8h1a7 7 0 0 0 7-7v-3" />
-        </svg>
-      </div>
+      {/* The mark alone — the name is set below in the UI face rather than
+          baked into the image, so it stays sharp and translatable. */}
+      <Image
+        src="/ishara-mark-192.png"
+        alt=""
+        width={192}
+        height={192}
+        priority
+        className="w-9 h-9 shrink-0 object-contain"
+      />
       <div className="leading-tight">
         <div className="font-semibold text-[15px] tracking-tight">Ishara AI</div>
         <div className="text-[11px] text-muted -mt-0.5">Healthcare communication</div>
