@@ -355,3 +355,7 @@ class RecognitionTrial(Base):
     d2_diff_label: Mapped[Optional[float]] = mapped_column(Numeric, nullable=True)
     accepted: Mapped[bool] = mapped_column(Boolean, default=False)
     outcome: Mapped[str] = mapped_column(TrialOutcome)
+    capture_frames: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)
+    capture_ms: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)
+    hand_visibility: Mapped[Optional[float]] = mapped_column(Numeric, nullable=True)
+    capture_path: Mapped[Optional[str]] = mapped_column(Text, nullable=True)

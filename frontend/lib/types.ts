@@ -68,6 +68,11 @@ export interface RecognitionEvent {
   reason?: string;
   notice?: string;
   vocabulary_size?: number;
+  landmarks?: boolean;
+  best_sign_code?: string;
+  hand_visibility?: number;
+  frames?: number;
+  capture_path?: string;
   thresholds?: Record<string, number>;
 }
 

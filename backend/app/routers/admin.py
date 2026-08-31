@@ -20,6 +20,7 @@ from sqlalchemy.exc import DBAPIError, IntegrityError
 from sqlalchemy.orm import Session
 
 from .. import audit
+from ..config import settings
 from ..db import get_db
 from ..schemas import AccountEmail
 from ..deps import require_admin, require_staff
@@ -445,6 +446,218 @@ def create_test(payload: TestCreate, request: Request, db: Session = Depends(get
     return {"ok": True, "id": str(record.id)}
 
 
+# ================================================================ live trials
+# Each attempt is written the moment it happens. Nothing depends on remembering
+# to press Save, and per-trial distances are exactly what threshold calibration
+# needs (docs/RECOGNITION_SPEC.md section 5).
+
+TRIAL_OUTCOMES = {
+    "recognized_correct": "correct",
+    "recognized_wrong": "wrong",
+    "unknown_ambiguous": "unknown_ambiguous",
+    "unknown_no_match": "unknown_no_match",
+    "aborted": "aborted",
+}
+
+# How each stored outcome rolls into the three headline counters. Unknown is
+# never folded into wrong -- they are different behaviours (I5).
+_TALLY = {
+    "correct": "correct",
+    "wrong": "wrong",
+    "unknown_ambiguous": "unknown",
+    "unknown_no_match": "unknown",
+    "aborted": "unknown",
+}
+
+
+class TrialCreate(BaseModel):
+    test_level: str
+    participant_code: str
+    expected_sign_code: str
+    outcome: str                      # a key of TRIAL_OUTCOMES
+    top1_sign_code: str | None = None
+    d1: float | None = None
+    d2_diff_label: float | None = None
+    accepted: bool = False
+    capture_frames: int | None = None
+    capture_ms: int | None = None
+    hand_visibility: float | None = None
+    capture_path: str | None = None
+
+
+def _participant(db: Session, code: str) -> TestParticipant:
+    participant = db.scalar(
+        select(TestParticipant).where(TestParticipant.participant_code == code)
+    )
+    if not participant:
+        participant = TestParticipant(
+            participant_code=code,
+            # P02 onward are the validation population: never used for tuning.
+            is_unseen=code.upper() not in ("P01",),
+        )
+        db.add(participant)
+        db.flush()
+    return participant
+
+
+@router.post("/testing/trial")
+def record_trial(payload: TrialCreate, request: Request, db: Session = Depends(get_db),
+                 user: User = Depends(require_staff)):
+    """Record one live attempt, incrementing its aggregate row."""
+    stored = TRIAL_OUTCOMES.get(payload.outcome)
+    if stored is None:
+        raise HTTPException(
+            status.HTTP_400_BAD_REQUEST,
+            f"Unknown outcome '{payload.outcome}'. Expected one of: "
+            + ", ".join(TRIAL_OUTCOMES),
+        )
+
+    sign = db.scalar(select(Sign).where(Sign.code == payload.expected_sign_code))
+    if not sign:
+        raise HTTPException(
+            status.HTTP_404_NOT_FOUND, f"Unknown sign '{payload.expected_sign_code}'"
+        )
+
+    top1 = None
+    if payload.top1_sign_code:
+        top1 = db.scalar(select(Sign).where(Sign.code == payload.top1_sign_code))
+
+    participant = _participant(db, payload.participant_code)
+    config = db.scalar(select(RecognitionConfig).where(RecognitionConfig.is_active))
+
+    # One aggregate row per (level, sign, participant); created on first attempt.
+    record = db.scalar(
+        select(RecognitionTest).where(
+            RecognitionTest.test_level == payload.test_level,
+            RecognitionTest.sign_id == sign.id,
+            RecognitionTest.participant_id == participant.id,
+        )
+    )
+    tally = _TALLY[stored]
+    if not record:
+        # Created with this first attempt already counted. An attempts=0 row
+        # would violate chk_test_nonneg the moment it is flushed, and the id is
+        # needed before the trial row can reference it.
+        record = RecognitionTest(
+            test_level=payload.test_level,
+            sign_id=sign.id,
+            participant_id=participant.id,
+            attempts=1,
+            correct=1 if tally == "correct" else 0,
+            wrong=1 if tally == "wrong" else 0,
+            unknown=1 if tally == "unknown" else 0,
+            config_id=config.id if config else None,
+            notes="Recorded live by the trial harness",
+        )
+        db.add(record)
+        db.flush()
+    else:
+        # attempts and the outcome counter move together, or the check
+        # constraint correct + wrong + unknown = attempts rejects the row.
+        record.attempts += 1
+        setattr(record, tally, getattr(record, tally) + 1)
+
+    index = db.scalar(
+        select(func.count()).select_from(RecognitionTrial).where(
+            RecognitionTrial.test_id == record.id
+        )
+    ) or 0
+
+    db.add(
+        RecognitionTrial(
+            test_id=record.id,
+            trial_index=index + 1,
+            ground_truth_sign_id=sign.id,
+            top1_sign_id=top1.id if top1 else None,
+            d1=payload.d1,
+            d2_diff_label=payload.d2_diff_label,
+            accepted=payload.accepted,
+            outcome=stored,
+            capture_frames=payload.capture_frames,
+            capture_ms=payload.capture_ms,
+            hand_visibility=payload.hand_visibility,
+            capture_path=payload.capture_path,
+        )
+    )
+
+    # Track the worst confusion as it emerges, so the aggregate row is useful
+    # without re-querying every trial.
+    if stored == "wrong" and top1:
+        worst = db.execute(
+            text(
+                "SELECT top1_sign_id, count(*) c FROM recognition_trials "
+                "WHERE test_id = :t AND outcome = 'wrong' AND top1_sign_id IS NOT NULL "
+                "GROUP BY top1_sign_id ORDER BY c DESC LIMIT 1"
+            ),
+            {"t": str(record.id)},
+        ).first()
+        record.top_confusion_sign_id = worst[0] if worst else top1.id
+
+    try:
+        db.commit()
+    except (IntegrityError, DBAPIError) as exc:
+        db.rollback()
+        raise _invariant_error(exc) from exc
+
+    return {"ok": True, "trial_index": index + 1, "test_id": str(record.id)}
+
+
+@router.get("/testing/session")
+def get_session(participant_code: str, test_level: str | None = None,
+                db: Session = Depends(get_db), _: User = Depends(require_staff)):
+    """Every recorded attempt for a participant, oldest first.
+
+    Lets an interrupted session resume from the database rather than from
+    browser memory that dies with the tab.
+    """
+    sql = (
+        "SELECT s.code AS expected, ts.code AS got, tr.outcome::text AS outcome, "
+        "       tr.d1, tr.d2_diff_label AS d2, tr.trial_index, rt.test_level::text AS test_level "
+        "FROM recognition_trials tr "
+        "JOIN recognition_tests rt ON rt.id = tr.test_id "
+        "JOIN signs s ON s.id = tr.ground_truth_sign_id "
+        "LEFT JOIN signs ts ON ts.id = tr.top1_sign_id "
+        "JOIN test_participants p ON p.id = rt.participant_id "
+        "WHERE p.participant_code = :code "
+    )
+    params: dict = {"code": participant_code}
+    if test_level:
+        sql += "AND rt.test_level = :level "
+        params["level"] = test_level
+    sql += "ORDER BY tr.id"
+
+    rows = [dict(r._mapping) for r in db.execute(text(sql), params)]
+    return {"participant_code": participant_code, "trials": rows}
+
+
+@router.delete("/testing/session")
+def clear_session(participant_code: str, request: Request,
+                  db: Session = Depends(get_db), user: User = Depends(require_admin)):
+    """Discard a participant's recorded attempts so the run can start over."""
+    participant = db.scalar(
+        select(TestParticipant).where(TestParticipant.participant_code == participant_code)
+    )
+    if not participant:
+        return {"ok": True, "deleted": 0}
+
+    deleted = db.execute(
+        text("SELECT count(*) FROM recognition_trials tr JOIN recognition_tests rt "
+             "ON rt.id = tr.test_id WHERE rt.participant_id = :p"),
+        {"p": str(participant.id)},
+    ).scalar() or 0
+
+    # Trials cascade with their aggregate rows.
+    db.execute(
+        text("DELETE FROM recognition_tests WHERE participant_id = :p"),
+        {"p": str(participant.id)},
+    )
+    audit.record(db, action="delete", entity_type="recognition_test",
+                 entity_id=participant_code, user_id=user.id,
+                 before={"trials": deleted}, request=request)
+    db.commit()
+    return {"ok": True, "deleted": deleted}
+
+
 # ================================================================ thresholds
 
 class ThresholdUpdate(BaseModel):
@@ -508,6 +721,57 @@ def freeze_thresholds(request: Request, db: Session = Depends(get_db),
     return {"ok": True, "frozen_on": config.frozen_on,
             "note": "Thresholds are frozen. Run the T4 unseen-person test now. "
                     "Changing them afterwards voids that result."}
+
+
+# ================================================================ references
+
+
+@router.get("/references")
+def list_references(db: Session = Depends(get_db), _: User = Depends(require_staff)):
+    """Every reference sequence, split by where it came from."""
+    rows = db.execute(
+        text(
+            "SELECT s.code AS sign_code, sr.landmark_path, sr.frame_count, "
+            "       sr.extractor_version, sr.is_active, sr.is_augmented, "
+            "       p.participant_code "
+            "FROM sign_references sr "
+            "JOIN signs s ON s.id = sr.sign_id "
+            "LEFT JOIN test_participants p ON p.id = sr.participant_id "
+            "ORDER BY s.code, sr.created_at"
+        )
+    )
+    references = [dict(r._mapping) for r in rows]
+
+    # What is actually on disk, including the dictionary extractions that
+    # predate the sign_references rows.
+    directory = settings.repo_root / "experiments" / "day1" / "references"
+    on_disk = sorted(p.stem for p in directory.glob("*.npz")) if directory.exists() else []
+
+    per_sign: dict[str, dict] = {}
+    for name in on_disk:
+        code = name.rsplit("_ref_", 1)[0] if "_ref_" in name else name.rsplit("_", 2)[0]
+        entry = per_sign.setdefault(code, {"dictionary": 0, "recorded": 0, "names": []})
+        entry["names"].append(name)
+        if "_ref_" in name:
+            entry["dictionary"] += 1
+        else:
+            entry["recorded"] += 1
+
+    return {"references": references, "on_disk": on_disk, "per_sign": per_sign}
+
+
+@router.post("/references/reload")
+def reload_references(request: Request, db: Session = Depends(get_db),
+                      user: User = Depends(require_staff)):
+    """Re-read the reference library so new recordings take effect at once."""
+    from ..services.recognition import activate, is_stub, select_engine
+
+    engine, reason = select_engine()
+    activate(engine)
+    audit.record(db, action="reload", entity_type="reference_library",
+                 user_id=user.id, after={"reason": reason}, request=request)
+    db.commit()
+    return {"ok": True, "engine": "stub" if is_stub() else "dtw", "detail": reason}
 
 
 # ================================================================ assets

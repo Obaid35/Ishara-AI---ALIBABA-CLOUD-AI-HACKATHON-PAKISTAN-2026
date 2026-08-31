@@ -1,0 +1,33 @@
+{
+  "extractor_version": "holistic-tasks/2.0/98d-anchor-shape",
+  "mediapipe": "1.0.1",
+  "signs": [
+    {
+      "code": "I_HAVE_A_COMPLAINT",
+      "source": "I_have_a_complaint_1666698120_32698.mp4",
+      "source_fps": 50.0,
+      "total_frames": 411,
+      "hand_visibility": 0.511,
+      "samples": [
+        {
+          "name": "I_HAVE_A_COMPLAINT_ref_01",
+          "start_s": 0.68,
+          "end_s": 3.1,
+          "duration_s": 2.42,
+          "frames": 73,
+          "sequence": "experiments/day1/references/I_HAVE_A_COMPLAINT_ref_01.npz",
+          "clip": "experiments/day1/clips/I_HAVE_A_COMPLAINT_ref_01.mp4"
+        },
+        {
+          "name": "I_HAVE_A_COMPLAINT_ref_02",
+          "start_s": 4.82,
+          "end_s": 7.32,
+          "duration_s": 2.5,
+          "frames": 75,
+          "sequence": "experiments/day1/references/I_HAVE_A_COMPLAINT_ref_02.npz",
+          "clip": "experiments/day1/clips/I_HAVE_A_COMPLAINT_ref_02.mp4"
+        }
+      ]
+    }
+  ]
+}

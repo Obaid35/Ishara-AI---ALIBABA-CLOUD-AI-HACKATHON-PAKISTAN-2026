@@ -30,7 +30,10 @@ K_START = 3             # consecutive frames above THETA_START
 THETA_END = 0.010       # motion energy to end capture (hysteresis: < THETA_START)
 K_END = 8               # consecutive frames below THETA_END
 T_MIN_MS = 400          # shorter capture is discarded, never classified
-T_MAX_MS = 3000         # longer capture aborts
+T_MAX_MS = 5000         # longer capture aborts
+#   Raised from 3000 on Day-1 evidence: PAIN_IN_EYE is a compound sign whose
+#   references measure 3.07s and 2.97s, so a 3s cap aborted every live attempt
+#   before the sign finished. 5s still catches a genuine runaway capture.
 T_REFRACTORY_MS = 600   # after a decision, before returning to READY
 
 
@@ -68,6 +71,14 @@ class RecognitionEvent:
     d2_diff_label: float | None = None
     duration_ms: int | None = None
     reason: str | None = None
+    # The nearest reference even when the gate refused it. Without this a
+    # rejected attempt tells you nothing about whether the ordering was right,
+    # and you cannot tell whether raising tau would help or start producing
+    # confident errors.
+    best_sign_code: str | None = None
+    hand_visibility: float | None = None
+    frames: int | None = None
+    capture_path: str | None = None
 
     def as_dict(self) -> dict:
         return {k: v for k, v in self.__dict__.items() if v is not None} | {
@@ -276,10 +287,71 @@ class SegmentationMachine:
         return duration_ms < T_MIN_MS
 
 
-# Module-level engine. Replace with the real implementation when MediaPipe +
-# DTW land; nothing else in the application needs to change.
+# Module-level engine. Swapped for the real DTW engine at startup as soon as
+# extracted references exist; nothing else in the application changes.
 engine: RecognitionEngine = StubEngine()
 
 
 def is_stub() -> bool:
     return getattr(engine, "name", "stub") == "stub"
+
+
+def reference_dir():
+    from ..config import settings
+
+    return settings.repo_root / "experiments" / "day1" / "references"
+
+
+def select_engine() -> tuple[RecognitionEngine, str]:
+    """Pick the real engine when references are available, else the stub.
+
+    Returns (engine, reason) so startup and /api/health can report honestly
+    which one is live and why.
+    """
+    directory = reference_dir()
+
+    try:
+        import numpy  # noqa: F401
+    except ImportError:
+        return StubEngine(), "numpy is not installed"
+
+    if not directory.exists():
+        return StubEngine(), f"no reference directory at {directory.name}/"
+
+    try:
+        from .dtw import DtwEngine, ReferenceLibrary
+    except ImportError as exc:
+        return StubEngine(), f"DTW engine unavailable ({exc})"
+
+    library = ReferenceLibrary()
+    loaded = library.load_dir(directory)
+    if loaded == 0:
+        return StubEngine(), "no reference sequences found - run extract_references.py"
+
+    band, absent = 15.0, 0.35
+    try:
+        from ..db import SessionLocal, db_state
+        from sqlalchemy import text as _text
+        if db_state.available or db_state.probe():
+            db = SessionLocal()
+            try:
+                row = db.execute(_text(
+                    'SELECT band_width_pct, p_absent FROM recognition_config '
+                    'WHERE is_active LIMIT 1')).first()
+                if row:
+                    band, absent = float(row[0]), float(row[1])
+            finally:
+                db.close()
+    except Exception:  # noqa: BLE001 - fall back to the defaults
+        pass
+
+    return (
+        DtwEngine(library, p_absent=absent, band_pct=band),
+        f"{loaded} reference(s) covering {len(library.sign_codes)} sign(s)",
+    )
+
+
+def activate(new_engine: RecognitionEngine) -> None:
+    """Install the engine the rest of the app will use."""
+    global engine
+    engine = new_engine
